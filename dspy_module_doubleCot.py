@@ -1,7 +1,6 @@
 import dspy
 
-##lm = dspy.LM('ollama_chat/qwen3:4b', api_base="http://localhost:11434")
-lm = dspy.LM('gemini/gemini-2.5-flash', api_key='AIzaSyCKWBUF4M-Oat76LiejyOjvPzoEL5kzR28')
+lm = dspy.LM('ollama_chat/qwen3:4b', api_base="http://localhost:11434")
 dspy.configure(lm=lm)
 
 class QA(dspy.Signature):
