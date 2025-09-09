@@ -1,0 +1,359 @@
+{
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        -16
+      ],
+      "id": "09f92623-72a3-4520-8027-1f785a563c6f",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://internal.users.n8n.cloud/webhook/level2-erp",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "unique_id",
+              "value": "430b28025c01fe1263c5240155b8d983"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -160,
+        -112
+      ],
+      "id": "d3ff59b3-eba1-4f9e-b49b-b0ba0771a089",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "wzCUBThgfomcFf3z",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "customerID",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        64,
+        -16
+      ],
+      "id": "ce4b9f85-d576-417a-ad7e-66373882c7eb",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "sortFieldsUi": {
+          "sortField": [
+            {
+              "fieldName": "orderPrice",
+              "order": "descending"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.sort",
+      "typeVersion": 1,
+      "position": [
+        288,
+        -16
+      ],
+      "id": "5672742b-8ef8-463d-93fd-d5810db616c0",
+      "name": "Sort"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1qkUR5UrvGw1aY9JqgJVgC0EyoB2_y8O-uLGazWBWzJY",
+          "mode": "list",
+          "cachedResultName": "Customers",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qkUR5UrvGw1aY9JqgJVgC0EyoB2_y8O-uLGazWBWzJY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1662247458,
+          "mode": "list",
+          "cachedResultName": "Grid view (1)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qkUR5UrvGw1aY9JqgJVgC0EyoB2_y8O-uLGazWBWzJY/edit#gid=1662247458"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -160,
+        80
+      ],
+      "id": "2e7f077e-8f9f-486e-8873-df3f353b907b",
+      "name": "Get row(s) in sheet",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "4beksQlRe7eMVmjY",
+          "name": "Google Sheets account 4"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "57f85ab3-1d92-484f-9544-2bbd484b48d4",
+              "leftValue": "={{ $json.region}}",
+              "rightValue": "=Americas",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        512,
+        -16
+      ],
+      "id": "20a847d4-8c05-455e-a79b-7091c31f9891",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "mode": "each",
+        "binaryPropertyName": "=Report OrderID {{ $json.orderID }} and CustomerID {{ $json.customerID }}",
+        "options": {
+          "format": true,
+          "encoding": "utf8",
+          "fileName": "=filename = Report OrderID {{ $json.orderID }} and CustomerID {{ $json.customerID }}"
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        736,
+        -16
+      ],
+      "id": "aa636d87-83aa-4aec-b223-800b44151af9",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "\"I sent the file using email with the label ID {Report OrderID 18 and CustomerID 5}. My ID: 430b28025c01fe1263c5240155b8d983.\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        1184,
+        -16
+      ],
+      "id": "a37d695a-3d74-4657-8ef4-adf7170ef1fe",
+      "name": "Discord",
+      "webhookId": "2259e300-5664-4d24-b82f-5550e5e140ac",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "LnpbUdK4am1JvkiE",
+          "name": "Discord Webhook account 4"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "sendTo": "Karen.greene@live.com",
+        "subject": "={{ Object.keys($binary).join(',') }}",
+        "message": "Hello!            Attached is the update to your order.                                                                                                                          Atttached is your report.",
+        "options": {
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {
+                "property": "={{ Object.keys($binary).join(',') }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        960,
+        -16
+      ],
+      "id": "7bc0feff-4122-4e88-92b2-8552284d01e1",
+      "name": "Send a message",
+      "webhookId": "cc238511-b647-42ae-a37f-e2e26a343fd2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "cQFB2STVmxrTMfg2",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://internal.users.n8n.cloud/webhook/discord-level2",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "\"I sent the file using email with the label ID {Report OrderID 18 and CustomerID 5}. My ID: 430b28025c01fe1263c5240155b8d983."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1392,
+        -16
+      ],
+      "id": "8897b21b-824f-4302-815b-3da3f49f79b1",
+      "name": "HTTP Request1"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Sort",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sort": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Discord",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "cf7063da0988d823289fab669132eac388356943ce361db4c500bfdb2f81f319"
+  }
+}
