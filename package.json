@@ -1,0 +1,15 @@
+{
+  "name": "gita-handbook-site-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Daily automated Playwright tests for the Bhagavad Gita Handbook site",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:report": "playwright show-report",
+    "codegen": "playwright codegen https://the-bhagavad-gita-handbook.netlify.app/"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.0"
+  }
+}

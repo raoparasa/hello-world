@@ -1,0 +1,57 @@
+name: Daily Site Check - Bhagavad Gita Handbook
+
+on:
+  schedule:
+    # 6:00 AM UTC daily. Adjust as needed - cron is always UTC.
+    - cron: '0 6 * * *'
+  workflow_dispatch: {} # allows manual "Run workflow" trigger from the Actions tab
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright tests against live site
+        run: npx playwright test
+
+      # GitHub sends a default failure-notification email automatically to
+      # the user who triggered the run / repo watchers - no extra step needed
+      # for that. Nothing to configure here for email alerts.
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14
+
+      # --- Discord notification (add later) ---
+      # 1. Create a Discord webhook URL in your server: Server Settings > Integrations > Webhooks
+      # 2. Add it as a repo secret named DISCORD_WEBHOOK_URL
+      #    (Settings > Secrets and variables > Actions > New repository secret)
+      # 3. Uncomment the step below.
+      #
+      # - name: Notify Discord on failure
+      #   if: failure()
+      #   uses: sarisia/actions-status-discord@v1
+      #   with:
+      #     webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      #     title: "Daily Site Check Failed"
+      #     description: "Bhagavad Gita Handbook site check failed - see run for details."
+      #     color: 0xff0000
