@@ -7,7 +7,7 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './tests',
-  timeout: 30_000,
+  timeout: 45_000,
   expect: { timeout: 10_000 },
   fullyParallel: true,
   retries: 2, // live-site flakiness (network, cold Netlify function starts, etc.)
