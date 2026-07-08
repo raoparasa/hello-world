@@ -1,9 +1,9 @@
 name: Daily Site Check - Bhagavad Gita Handbook
 
 on:
-  schedule:
-    # 6:00 AM UTC daily. Adjust as needed - cron is always UTC.
-    - cron: '0 6 * * *'
+  #schedule:
+  # 6:00 AM UTC daily. Adjust as needed - cron is always UTC.
+  # - cron: '0 6 * * *'
   workflow_dispatch: {} # allows manual "Run workflow" trigger from the Actions tab
 
 jobs:
@@ -17,7 +17,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Install dependencies
